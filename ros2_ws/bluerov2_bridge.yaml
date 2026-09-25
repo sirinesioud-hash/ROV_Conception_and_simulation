@@ -1,0 +1,69 @@
+# Configuration complète du Bridge pour BlueROV2
+
+# --- CAPTEURS (Gazebo -> ROS 2) ---
+# usbl_bridge.yaml
+- ros_topic_name: /bluerov2/usbl/position
+  gz_topic_name: /bluerov2/usbl/position
+  ros_type_name: sensor_msgs/msg/NavSatFix
+  gz_type_name: gz.msgs.NavSat
+  direction: GZ_TO_ROS
+
+# Caméra
+- topic_name: "/camera"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
+  # camera_bridge.yaml
+- topic_name: "/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "gz.msgs.CameraInfo"
+  direction: GZ_TO_ROS
+  # sonar_sensor
+- topic_name: "/sonar_sensor/points"
+  ros_type_name: "sensor_msgs/msg/PointCloud2"
+  gz_type_name: "gz.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS
+
+# IMU (Centrale inertielle)
+- topic_name: "/model/bluerov2/imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  direction: GZ_TO_ROS
+
+# --- MOTEURS / THRUSTERS (ROS 2 -> Gazebo) ---
+
+# Propulseur 1 (Front-Right)
+- topic_name: "bluerov2/thruster_front_right_cmd"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+# Propulseur 2 (Front-Left)
+- topic_name: "bluerov2/thruster_front_left_cmd"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+# Propulseur 3 (Rear-Right)
+- topic_name: "bluerov2/thruster_back_right_cmd"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+# Propulseur 4 (Rear-Left)
+- topic_name: "bluerov2/thruster_back_left_cmd"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+# Propulseur 5 (Vertical-Right)
+- topic_name: "bluerov2/thruster_vertical_right_cmd"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+# Propulseur 6 (Vertical-Left)
+- topic_name: "bluerov2/thruster_vertical_left_cmd"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
