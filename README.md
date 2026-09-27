@@ -13,9 +13,9 @@
 
 An end-to-end mechatronic design, physics simulation, and embedded control framework for an underwater **Remotely Operated Vehicle (ROV)** dedicated to offshore pipeline crack and structural defect inspection.
 
-<!-- 📸 PASTE SCREENSHOT HERE: (Figure 3.1 / Page 41) - Simulation de l'environnement sous-marin avec Gazebo -->
+<img width="802" height="611" alt="Gazebo Subsea World" src="https://github.com/user-attachments/assets/cbb6f6fa-3d80-4c51-8334-ec4ef3dbe480" />
 
-<!-- 📸 PASTE SCREENSHOT HERE: (Figure 2.4 / Page 29) - Vue isométrique et vue de dessus du ROV -->
+<img width="523" height="430" alt="ROV CAD Views" src="https://github.com/user-attachments/assets/ae8b4770-4d7a-4278-8869-96ca7d95024f" />
 
 This project delivers an integrated solution spanning:
 1. **Mechanical & Hydrodynamic CAD:** 3D-modeled frame with a 6-thruster configuration (4 vectored at 45° for planar translation & yaw, 2 vertical thrusters).
@@ -26,9 +26,9 @@ This project delivers an integrated solution spanning:
 ### 1. Hardware & Electronics Architecture
 The electronics bay integrates power management and logic control across a Raspberry Pi 4, ESP32, and 3 dual H-bridge motor drivers:
 
-<!-- 📸 PASTE SCREENSHOT HERE: (Figure 2.9 / Page 40) - Schéma électronique du prototype (Raspberry Pi, ESP32, L298N) -->
+<img width="814" height="499" alt="Electronic Schematic" src="https://github.com/user-attachments/assets/fc4ba465-ed8b-4ff4-8823-f69e166525c2" />
 
-<!-- 📸 PASTE SCREENSHOT HERE: (Figure 2.6 / Page 31) - Vue de dessus de la base inférieure et implantation des composants électroniques -->
+<img width="440" height="754" alt="Electronics Placement" src="https://github.com/user-attachments/assets/126a829c-baba-4f70-a494-3ddb7b53cc2c" />
 
 ### 2. Thruster Configuration (Vectored 45°)
 The 4 horizontal thrusters are oriented at 45° to provide full planar translation ($X, Y$) and yaw rotation without requiring dedicated lateral thrusters:
@@ -41,14 +41,12 @@ The 4 horizontal thrusters are oriented at 45° to provide full planar translati
 | **Yaw Right (Turn +)** | ⊕ | ⊖ | ⊖ | ⊕ |
 | **Depth Up / Down** | \- | \- | \- | \- | *(Controlled via 2 vertical thrusters)* |
 
-<!-- 📸 PASTE SCREENSHOT HERE: (Figure 2.5 / Page 30) - Vues isométriques de la base supérieure du ROV -->
-
-<!-- 📸 PASTE SCREENSHOT HERE: (Figure 2.7 / Page 33) - Modélisation 3D d'un propulseur et hélice tripale -->
+<img width="742" height="552" alt="Thruster CAD" src="https://github.com/user-attachments/assets/0efee440-23a6-4005-a085-14aead87f7ae" />
 
 ### 3. Sonar Acoustic Modeling (MATLAB)
 To validate acoustic defect detection, simulated active sonar signals ($f_0 = 2\text{ kHz}$) were modeled under three pipeline conditions:
 
-<!-- 📸 PASTE SCREENSHOT HERE: (Figure 2.8 / Page 37) - Simulation MATLAB des signaux sonar reçus selon l'état du pipeline -->
+<img width="839" height="420" alt="MATLAB Sonar Signals" src="https://github.com/user-attachments/assets/b3db43e1-f677-4599-81ac-857879888ddf" />
 
 * **Healthy Pipeline:** High specular reflection ($A_{\text{max}} > 0.5$, $\text{SNR} > 12\text{ dB}$).
 * **Corroded Pipeline:** Diffuse acoustic scattering ($0.2 < A_{\text{max}} \le 0.5$, $\text{SNR} = 5\text{--}12\text{ dB}$).
@@ -65,11 +63,11 @@ To validate acoustic defect detection, simulated active sonar signals ($f_0 = 2\
   * **Communication Architecture:** Interfaced Raspberry Pi 4 (micro-ROS Agent) and ESP32 via serial UART.
   * **Motor Driver Firmware:** C++/Arduino firmware implementing `drive_motor()` for 8-bit PWM speed control (1 kHz LEDC) and direction toggling across 3× L298N drivers.
 
-<!-- 📸 PASTE SCREENSHOT HERE: (Figure 3.12 / Page 51) - Architecture de communication entre ESP32 et Raspberry Pi -->
+<img width="648" height="272" alt="micro-ROS Architecture" src="https://github.com/user-attachments/assets/497026c8-7aa1-4482-a1db-a36d7cc62d18" />
 
-<!-- 📸 PASTE SCREENSHOT HERE: (Figure 3.15 / Page 54) - Test et validation de communication ROS2 et micro-ROS -->
+<img width="245" height="335" alt="Hardware Validation" src="https://github.com/user-attachments/assets/4ffd34b4-2afd-4a94-aeb9-57bbced3c2a3" />
 
-<!-- 📸 PASTE SCREENSHOT HERE: (Figure 3.16 / Page 55) - Test des moteurs avec ESP32 (Banc de test physique) -->
+<img width="460" height="618" alt="Motor Test Bench" src="https://github.com/user-attachments/assets/d72b2266-b186-427c-859a-d1261edae93a" />
 
 ---
 
@@ -102,7 +100,26 @@ docker run -it --rm \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     rov_inspect:latest
-    ## 🕹️ Usage
+```
+
+### 2. Launch Simulation Stack
+```bash
+source /opt/ros/humble/setup.bash
+source ros2_ws/install/setup.bash
+
+ros2 launch rov_gazebo launch.py
+```
+
+### 3. Run micro-ROS Agent (Hardware)
+```bash
+docker run -it --rm --net=host --privileged \
+    -v /dev:/dev \
+    microros/micro-ros-agent:humble serial --dev /dev/ttyUSB0 -b 115200
+```
+
+---
+
+## 🕹️ Usage
 
 ### 1. Teleoperation & Thruster Controls
 Control the ROV directly from your keyboard using the `keyboard_controller_node`:
@@ -114,15 +131,18 @@ Control the ROV directly from your keyboard using the `keyboard_controller_node`
 ### 2. Real-time Multi-sensor Visualization (RViz2)
 Live camera feeds and 3D Sonar point clouds (`PointCloud2`) are displayed simultaneously to assist the operator during inspection missions:
 
-<!-- 📸 PASTE SCREENSHOT HERE: (Figure 3.9 / Page 48) - RVIZ2 (Flux caméra et nuage de points sonar) -->
+<img width="839" height="485" alt="RViz2 Visualization" src="https://github.com/user-attachments/assets/a8d5a9e9-fa1e-45be-8c33-515af1887e28" />
 
 ### 3. Defect Detection & Georeferenced Logging
 When a defect is spotted, the `inspection_node` captures synchronized telemetry (USBL GPS coordinates, camera frame, and sonar point cloud) into a structured inspection report:
 
-<!-- 📸 PASTE SCREENSHOT HERE: (Figure 3.10 / Page 49) - Visualisation du rapport, simulation du pipeline endommagé et nuage de points -->
+<img width="931" height="341" alt="Inspection Report" src="https://github.com/user-attachments/assets/d7b46c30-2009-479b-bce2-fa525f8856d8" />
 
 ### 4. ROS 2 Computational Graph
-<!-- 📸 PASTE SCREENSHOT HERE: (Figure 3.8 / Page 47) - RQT_Graphe -->
+<img width="931" height="341" alt="RQT Graph" src="https://github.com/user-attachments/assets/a1a5b243-52f7-4e6a-ba11-9b3782c395aa" />
+
+---
+
 ## 🤝 Contributing
 
 Contributions, bug reports, and feature proposals are welcome! Please follow these standard steps:
