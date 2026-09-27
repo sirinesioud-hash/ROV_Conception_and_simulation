@@ -1,3 +1,12 @@
+
+# ==============================================================================
+# Configuration: bluerov2_bridge.yaml
+# Author: Sirine SIOUD (ENICarthage - Mechatronics)
+# Description:
+#   Bridge configuration mapping Gazebo Harmonic transport topics to ROS 2 Humble:
+#   - Sensors (GZ -> ROS): /camera, /sonar_sensor/points, /bluerov2/usbl/position, /imu
+#   - Actuators (ROS -> GZ): Individual Float64 thruster velocity commands (1-6)
+# ==============================================================================
 # Configuration complète du Bridge pour BlueROV2
 
 # --- CAPTEURS (Gazebo -> ROS 2) ---

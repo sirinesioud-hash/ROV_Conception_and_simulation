@@ -1,3 +1,17 @@
+"""
+===============================================================================
+File: simulation_launch.py
+Author: Sirine SIOUD (ENICarthage - Mechatronics)
+Project: Subsea Pipeline Inspection ROV
+
+Description:
+    ROS 2 Launch script centralizing the full simulation stack:
+    1. Gazebo Harmonic subsea environment with damaged pipeline
+    2. ROS-GZ Bidirectional Bridge (ros_gz_bridge)
+    3. RViz2 customized camera/sonar visualization layout
+    4. Inspection logging node and keyboard controller node
+===============================================================================
+"""
 import os
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess

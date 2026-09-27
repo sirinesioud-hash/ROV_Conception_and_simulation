@@ -1,0 +1,251 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+<world name="bluerov2_underwater">
+    <spherical_coordinates>
+    <surface_model>EARTH_WGS84</surface_model>
+    <latitude_deg>36.8065</latitude_deg>    <!-- change to your location -->
+    <longitude_deg>10.1815</longitude_deg>  <!-- Tunis coordinates used here -->
+    <elevation>0</elevation>
+    <heading_deg>0</heading_deg>
+  </spherical_coordinates>
+
+  <!-- ===== BASE PLUGINS ===== -->
+  <plugin filename="gz-sim-physics-system"
+          name="gz::sim::systems::Physics"/>
+  <plugin filename="gz-sim-user-commands-system"
+          name="gz::sim::systems::UserCommands"/>
+  <plugin filename="gz-sim-scene-broadcaster-system"
+          name="gz::sim::systems::SceneBroadcaster"/>
+  <plugin filename="gz-sim-imu-system"
+          name="gz::sim::systems::Imu"/>
+  <plugin filename="gz-sim-sensors-system"
+          name="gz::sim::systems::Sensors">
+    <render_engine>ogre2</render_engine>
+  </plugin>
+
+  <!-- ===== BUOYANCY ===== -->
+  <plugin filename="gz-sim-buoyancy-system"
+          name="gz::sim::systems::Buoyancy">
+    <graded_buoyancy>
+      <default_density>1000</default_density>
+      <density_change>
+        <above_depth>0</above_depth>
+        <density>1</density>
+      </density_change>
+    </graded_buoyancy>
+    <enable>bluerov2</enable>
+  </plugin>
+  <!-- Plugin NavSat pour publier sur ROS2 -->
+<plugin
+    filename="gz-sim-navsat-system"
+    name="gz::sim::systems::NavSat">
+</plugin>
+  
+
+  <!-- ===== LIGHTING ===== -->
+  <!-- Lumière principale venant du dessus -->
+  <light type="directional" name="sun">
+    <pose>0 0 150 0 0 0</pose>
+    <diffuse>1 1 1 1</diffuse>
+    <specular>0.1 0.1 0.1 1</specular>
+    <direction>0.3 0.3 -1</direction>
+    <cast_shadows>false</cast_shadows>
+  </light>
+
+  <!-- Lumière diffuse secondaire venant du dessous -->
+  <light type="directional" name="sun_diffuse">
+    <pose>0 0 -150 0 0 0</pose>
+    <diffuse>0.6 0.6 0.6 1</diffuse>
+    <specular>0 0 0 1</specular>
+    <direction>-0.3 -0.3 -1</direction>
+    <cast_shadows>false</cast_shadows>
+  </light>
+
+  <!-- ===== ENVIRONMENT ===== -->
+  
+
+  <!-- Fond marin (remplace sand_heightmap si tu as small_pipeline_seafloor) -->
+  <include>
+    <name>seafloor</name>
+    <uri>model://sand_heightmap</uri>
+    <!-- Rotation 1.57 rad = 90° pour orienter le fond correctement -->
+    <pose>0 41 -21 0 0 1.57</pose>
+  </include>
+
+  <!-- ===== PIPELINE SEGMENTS ===== -->
+  <!-- 
+    EXPLICATION DES POSES : <pose>X Y Z Roll Pitch Yaw</pose>
+    - X, Y, Z   : position en mètres dans le monde
+    - Roll, Pitch, Yaw : rotation en radians
+    - Tous les segments sont à Z=-20 (profondeur 20m)
+    - Yaw de 2.36 rad ≈ 135° → segment en diagonale
+    - Yaw de 1.57 rad ≈ 90°  → segment aligné sur l'axe Y
+  -->
+
+  <!-- Segment 1 : début du pipeline, segment coupé, en diagonale -->
+  <include>
+    <name>pipe_segment1</name>
+    <uri>model://pipelines/small/segments/clipped_segment_v1</uri>
+    <pose>-51.56 -15.14 -20 0 0 2.36</pose>
+  </include>
+
+  <!-- Segment 2 : segment droit, en diagonale (transition vers axe Y) -->
+  <include>
+    <name>pipe_segment2</name>
+    <uri>model://pipelines/small/segments/straight_segment</uri>
+    <pose>-44.49 -8.07 -20 0 0 2.36</pose>
+  </include>
+
+  <!-- Segment 3 : coude/virage, Pitch=3.14 rad (180°) pour retourner le coude -->
+  <include>
+    <name>pipe_segment3</name>
+    <uri>model://pipelines/small/segments/bent_segment</uri>
+    <pose>-37.41 -1 -20 0 3.14 2.36</pose>
+  </include>
+
+  <!-- Segment 4 : segment droit, aligné sur l'axe Y (Yaw=1.57) -->
+  <include>
+    <name>pipe_segment4</name>
+    <uri>model://pipelines/small/segments/straight_segment</uri>
+    <pose>-35 0 -20 0 0 1.57</pose>
+  </include>
+
+  <!-- Segment 5 : segment protégé (avec revêtement de protection) -->
+  <include>
+    <name>pipe_segment5</name>
+    <uri>model://pipelines/small/segments/protected_segment</uri>
+    <pose>-25 0 -20 0 0 1.57</pose>
+  </include>
+
+  <!-- Segment 6 : segment bosselé/endommagé → zone d'intérêt pour inspection -->
+  <include>
+    <name>pipe_segment6</name>
+    <uri>model://pipelines/small/segments/dented_segment</uri>
+    <pose>-15 0 -20 0 0 1.57</pose>
+  </include>
+
+  <!-- Segment 7 : segment droit standard -->
+  <include>
+    <name>pipe_segment7</name>
+    <uri>model://pipelines/small/segments/straight_segment</uri>
+    <pose>-5 0 -20 0 0 1.57</pose>
+  </include>
+
+  <!-- Segment 8 : segment déformé/tordu → autre défaut simulé -->
+  <include>
+    <name>pipe_segment8</name>
+    <uri>model://pipelines/small/segments/warped_segment</uri>
+    <pose>5 0 -20 0 0 1.57</pose>
+  </include>
+
+  <!-- Segment 9 : segment droit -->
+  <include>
+    <name>pipe_segment9</name>
+    <uri>model://pipelines/small/segments/straight_segment</uri>
+    <pose>15 0 -20 0 0 1.57</pose>
+  </include>
+
+  <!-- Segment 10 : segment avec vanne → point de contrôle du pipeline -->
+  <include>
+    <name>pipe_segment10</name>
+    <uri>model://pipelines/small/segments/segment_with_valve</uri>
+    <pose>25 0 -20 0 0 1.57</pose>
+  </include>
+
+  <!-- Segments 11 & 12 : segments droits après la vanne -->
+  <include>
+    <name>pipe_segment11</name>
+    <uri>model://pipelines/small/segments/straight_segment</uri>
+    <pose>26 0 -20 0 0 1.57</pose>
+  </include>
+
+  <include>
+    <name>pipe_segment12</name>
+    <uri>model://pipelines/small/segments/straight_segment</uri>
+    <pose>36 0 -20 0 0 1.57</pose>
+  </include>
+
+  <!-- Segment 13 : fin du pipeline, segment coupé v2 -->
+  <include>
+    <name>pipe_segment13</name>
+    <uri>model://pipelines/small/segments/clipped_segment_v2</uri>
+    <pose>46 0 -20 0 0 1.57</pose>
+  </include>
+
+  <!-- ===== OBJETS ENVIRONNEMENT ===== -->
+
+  <!-- Conteneur maritime (légèrement incliné, posé sur le fond) -->
+  <include>
+    <name>shipping_container</name>
+    <uri>model://objects/shipping_container</uri>
+    <pose>40 -4.5 -19.4 2.27 1.40 1.57</pose>
+  </include>
+
+  <!-- Ancre (inclinée, near segment 6 endommagé) -->
+  <include>
+    <name>anchor</name>
+    <uri>model://objects/anchor</uri>
+    <pose>-13 -1.5 -20 2.9 0.53 0.96</pose>
+  </include>
+
+  <!-- ===== FÛTS (éparpillés près du segment 2-3) ===== -->
+
+  <include>
+    <name>oil_drum1</name>
+    <uri>model://objects/oil_drum</uri>
+    <pose>-39.5 -2 -19.8 -0.79 1.57 1.05</pose>
+  </include>
+
+  <include>
+    <name>oil_drum2</name>
+    <uri>model://objects/oil_drum</uri>
+    <pose>-44 2 -19.8 0 1.83 1.57</pose>
+  </include>
+
+  <!-- NOTE : oil_drum3 avait une pose corrompue "2.1.48" dans l'original
+       → corrigée ici en 2.10 (valeur estimée) -->
+  <include>
+    <name>oil_drum3</name>
+    <uri>model://objects/oil_drum</uri>
+    <pose>-43 2.5 -19.7 0 2.10 1.48</pose>
+  </include>
+
+  <include>
+    <name>oil_drum4</name>
+    <uri>model://objects/oil_drum</uri>
+    <pose>-43 1.5 -19.8 0 1.66 1.22</pose>
+  </include>
+
+  <include>
+    <name>oil_drum5</name>
+    <uri>model://objects/oil_drum</uri>
+    <pose>-44 3 -19.8 0 1.40 1.22</pose>
+  </include>
+
+  <include>
+    <name>oil_drum6</name>
+    <uri>model://objects/oil_drum</uri>
+    <pose>-43.4 2 -19.4 -0.87 2.36 0.58</pose>
+  </include>
+
+  <include>
+    <name>oil_drum7</name>
+    <uri>model://objects/oil_drum</uri>
+    <pose>-43.5 3.1 -19.5 4.10 3.37 5.25</pose>
+  </include>
+
+  <!-- ===== ROBOT ===== -->
+  <include>
+    <uri>model://bluerov2</uri>
+    <!-- Placé près du début du pipeline, à -2m de profondeur -->
+    <pose>-16 -0 -19.3 0 0 0</pose>
+  </include>
+
+  <!-- Axes de référence visuels (origine du monde) -->
+  <include>
+    <uri>model://axes</uri>
+    <pose>0 0 0.2 0 0 0</pose>
+  </include>
+
+</world>
+</sdf>

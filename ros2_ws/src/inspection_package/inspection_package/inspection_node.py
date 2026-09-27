@@ -1,3 +1,19 @@
+"""
+===============================================================================
+Module: inspection_node.py
+Author: Sirine SIOUD (ENICarthage - Mechatronics)
+Project: Subsea Pipeline Inspection ROV
+
+Description:
+    Synchronizes telemetry across multiple subsea sensor streams:
+    - Camera Feed (sensor_msgs/msg/Image)
+    - Sonar Point Cloud (sensor_msgs/msg/PointCloud2)
+    - USBL Positioning (sensor_msgs/msg/NavSatFix)
+    
+    Triggered via the /take_snapshot topic to export timestamped,
+    georeferenced inspection reports and defect imagery.
+===============================================================================
+"""
 import rclpy
 import numpy as np
 from rclpy.node import Node

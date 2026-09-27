@@ -1,3 +1,16 @@
+"""
+===============================================================================
+Module: keyboard_controller.py
+Author: Sirine SIOUD (ENICarthage - Mechatronics)
+Project: Subsea Pipeline Inspection ROV
+
+Description:
+    Multi-threaded keyboard teleoperation node using 'pynput' and 'rclpy'.
+    Translates operator keystrokes into normalized Float64 thrust commands
+    for 6 independent thrusters (4 vectored at 45° + 2 vertical), and
+    publishes Empty trigger messages to /take_snapshot.
+===============================================================================
+"""
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float64, Empty
